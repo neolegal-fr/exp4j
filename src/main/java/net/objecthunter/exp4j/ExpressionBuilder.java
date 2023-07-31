@@ -36,7 +36,7 @@ public class ExpressionBuilder {
 
     private final Map<String, Operator> userOperators;
 
-    private VariableProvider variables;
+    private VariableStore variables;
 
     private boolean implicitMultiplication = true;
 
@@ -121,7 +121,7 @@ public class ExpressionBuilder {
      * @return the ExpressionBuilder instance
      */
     public ExpressionBuilder variables(VariableProvider variables) {
-        this.variables = variables;
+        this.variables.delegates().add(variables);
         return this;
     }    
 
@@ -215,7 +215,7 @@ public class ExpressionBuilder {
         }
 
         return new Expression(ShuntingYard.convertToRPN(this.expression, this.userFunctions, this.userOperators,
-                this.variables, this.implicitMultiplication), this.userFunctions.keySet());
+                this.variables, this.implicitMultiplication), this.variables, this.userFunctions.keySet());
     }
 
 }

@@ -28,7 +28,7 @@ public class Expression {
 
     private final Token[] tokens;
 
-    private VariableProvider variables;
+    private VariableStore variables;
 
     private final Set<String> userFunctionNames;
 
@@ -58,9 +58,10 @@ public class Expression {
         this.userFunctionNames = Collections.emptySet();
     }
 
-    Expression(final Token[] tokens, Set<String> userFunctionNames) {
+    Expression(final Token[] tokens, VariableProvider variables, Set<String> userFunctionNames) {
         this.tokens = tokens;
         this.variables = createDefaultVariables();
+        this.variables.delegates().add(variables);
         this.userFunctionNames = userFunctionNames;
     }
 
@@ -71,7 +72,7 @@ public class Expression {
     }
 
     public void setVariableProvider(final VariableProvider variables) {
-        this.variables = variables;
+        this.variables.delegates().add(variables);
     }
 
     private void checkVariableName(String name) {
@@ -108,7 +109,7 @@ public class Expression {
             for (final Token t : this.tokens) {
                 if (t.getType() == Token.TOKEN_VARIABLE) {
                     final String var = ((VariableToken) t).getName();
-                    if (!variables.contains(var)) {
+                    if (Objects.isNull(variables.get(var))) {
                         errors.add("The setVariable '" + var + "' has not been set");
                     }
                 }
