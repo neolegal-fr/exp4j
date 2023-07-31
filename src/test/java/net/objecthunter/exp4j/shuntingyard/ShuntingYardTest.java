@@ -15,13 +15,12 @@
  */
 package net.objecthunter.exp4j.shuntingyard;
 
+import net.objecthunter.exp4j.VariableStore;
 import net.objecthunter.exp4j.operator.Operator;
 import net.objecthunter.exp4j.tokenizer.Token;
 import org.junit.Test;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import static net.objecthunter.exp4j.TestUtil.*;
@@ -40,7 +39,7 @@ public class ShuntingYardTest {
     @Test
     public void testShuntingYard2() {
         String expression = "3*x";
-        Token[] tokens = ShuntingYard.convertToRPN(expression, null, null, new HashSet<>(Collections.singletonList("x")), true);
+        Token[] tokens = ShuntingYard.convertToRPN(expression, null, null, VariableStore.of("x"), true);
         assertNumberToken(tokens[0], 3d);
         assertVariableToken(tokens[1], "x");
         assertOperatorToken(tokens[2], "*", 2, Operator.PRECEDENCE_MULTIPLICATION);

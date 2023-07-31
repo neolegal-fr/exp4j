@@ -22,6 +22,7 @@ import net.objecthunter.exp4j.operator.Operator;
 import net.objecthunter.exp4j.shuntingyard.ShuntingYard;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Factory class for {@link Expression} instances. This class is the main API entrypoint. Users should create new
@@ -35,7 +36,7 @@ public class ExpressionBuilder {
 
     private final Map<String, Operator> userOperators;
 
-    private final Set<String> variableNames;
+    private VariableProvider variables;
 
     private boolean implicitMultiplication = true;
 
@@ -51,7 +52,7 @@ public class ExpressionBuilder {
         this.expression = expression;
         this.userOperators = new HashMap<>(4);
         this.userFunctions = new HashMap<>(4);
-        this.variableNames = new HashSet<>(4);
+        this.variables = new VariableStore();
     }
 
     /**
@@ -98,7 +99,7 @@ public class ExpressionBuilder {
      * @return the ExpressionBuilder instance
      */
     public ExpressionBuilder variables(Set<String> variableNames) {
-        this.variableNames.addAll(variableNames);
+        variableNames.forEach(variableName -> this.variables.set(variableName, null));
         return this;
     }
 
@@ -109,9 +110,20 @@ public class ExpressionBuilder {
      * @return the ExpressionBuilder instance
      */
     public ExpressionBuilder variables(String... variableNames) {
-        Collections.addAll(this.variableNames, variableNames);
+        Stream.of(variableNames).forEach(variableName -> this.variables.set(variableName, null));
         return this;
     }
+
+    /**
+     * Declare variable names used in the expression
+     *
+     * @param variableNames the variables used in the expression
+     * @return the ExpressionBuilder instance
+     */
+    public ExpressionBuilder variables(VariableProvider variables) {
+        this.variables = variables;
+        return this;
+    }    
 
     /**
      * Declare a variable used in the expression
@@ -120,7 +132,7 @@ public class ExpressionBuilder {
      * @return the ExpressionBuilder instance
      */
     public ExpressionBuilder variable(String variableName) {
-        this.variableNames.add(variableName);
+        this.variables.set(variableName, null);
         return this;
     }
 
@@ -186,21 +198,24 @@ public class ExpressionBuilder {
             throw new IllegalArgumentException("The expression can not be empty");
         }
 
-        /* set the constants' varibale names */
-        variableNames.add("pi");
-        variableNames.add("π");
-        variableNames.add("e");
-        variableNames.add("φ");
+        /* set the constants' variable names */
+        variables.set("pi", null);
+        variables.set("π", null);
+        variables.set("e", null);
+        variables.set("φ", null);
 
         /* Check if there are duplicate vars/functions */
-        for (String var : variableNames) {
-            if (Functions.getBuiltinFunction(var) != null || userFunctions.containsKey(var)) {
-                throw new IllegalArgumentException("A variable can not have the same name as a function [" + var + "]");
-            }
+        Optional<Function> conflict = Stream.of(Functions.getBuiltinFunctions()).filter(function -> variables.contains(function.getName())).findFirst();
+        if (conflict.isPresent()) {
+                throw new IllegalArgumentException("A variable can not have the same name as the builtin function [" + conflict.get().getName() + "]");
+        }
+        conflict = userFunctions.values().stream().filter(function -> variables.contains(function.getName())).findFirst();
+        if (conflict.isPresent()) {
+                throw new IllegalArgumentException("A variable can not have the same name as a the user function [" + conflict.get().getName() + "]");
         }
 
         return new Expression(ShuntingYard.convertToRPN(this.expression, this.userFunctions, this.userOperators,
-                this.variableNames, this.implicitMultiplication), this.userFunctions.keySet());
+                this.variables, this.implicitMultiplication), this.userFunctions.keySet());
     }
 
 }

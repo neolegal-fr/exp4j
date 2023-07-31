@@ -15,13 +15,13 @@
  */
 package net.objecthunter.exp4j.tokenizer;
 
+import net.objecthunter.exp4j.VariableProvider;
 import net.objecthunter.exp4j.function.Function;
 import net.objecthunter.exp4j.function.Functions;
 import net.objecthunter.exp4j.operator.Operator;
 import net.objecthunter.exp4j.operator.Operators;
 
 import java.util.Map;
-import java.util.Set;
 
 public class Tokenizer {
 
@@ -33,7 +33,7 @@ public class Tokenizer {
 
     private final Map<String, Operator> userOperators;
 
-    private final Set<String> variableNames;
+    private final VariableProvider variableProvider;
 
     private final boolean implicitMultiplication;
 
@@ -43,22 +43,22 @@ public class Tokenizer {
 
 
     public Tokenizer(String expression, final Map<String, Function> userFunctions,
-                     final Map<String, Operator> userOperators, final Set<String> variableNames, final boolean implicitMultiplication) {
+                     final Map<String, Operator> userOperators, final VariableProvider variableProvider, final boolean implicitMultiplication) {
         this.expression = expression.trim().toCharArray();
         this.expressionLength = this.expression.length;
         this.userFunctions = userFunctions;
         this.userOperators = userOperators;
-        this.variableNames = variableNames;
+        this.variableProvider = variableProvider;
         this.implicitMultiplication = implicitMultiplication;
     }
 
     public Tokenizer(String expression, final Map<String, Function> userFunctions,
-                     final Map<String, Operator> userOperators, final Set<String> variableNames) {
+                     final Map<String, Operator> userOperators, final VariableProvider variableProvider) {
         this.expression = expression.trim().toCharArray();
         this.expressionLength = this.expression.length;
         this.userFunctions = userFunctions;
         this.userOperators = userOperators;
-        this.variableNames = variableNames;
+        this.variableProvider = variableProvider;
         this.implicitMultiplication = true;
     }
 
@@ -160,7 +160,7 @@ public class Tokenizer {
         while (!isEndOfExpression(testPos) &&
                 isVariableOrFunctionCharacter(expression[testPos])) {
             String name = new String(expression, offset, len);
-            if (variableNames != null && variableNames.contains(name)) {
+            if (variableProvider != null && variableProvider.contains(name)) {
                 lastValidLen = len;
                 lastValidToken = new VariableToken(name);
             } else {

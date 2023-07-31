@@ -1,5 +1,7 @@
 package net.objecthunter.exp4j;
 
 public interface VariableProvider {
-    Double getVariable(String variable);
+    Double get(String variable);
+    void set(String variable, Double value);
+    boolean contains(String name);
 }

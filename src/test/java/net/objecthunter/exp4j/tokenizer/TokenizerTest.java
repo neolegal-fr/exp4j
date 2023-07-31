@@ -15,6 +15,7 @@
  */
 package net.objecthunter.exp4j.tokenizer;
 
+import net.objecthunter.exp4j.VariableStore;
 import net.objecthunter.exp4j.function.Function;
 import net.objecthunter.exp4j.operator.Operator;
 import org.junit.Test;
@@ -230,7 +231,7 @@ public class TokenizerTest {
 
     @Test
     public void testTokenization13() {
-        final Tokenizer tokenizer = new Tokenizer("x", null, null, new HashSet<>(Collections.singletonList("x")));
+        final Tokenizer tokenizer = new Tokenizer("x", null, null, VariableStore.of("x"));
 
         assertTrue(tokenizer.hasNext());
         assertVariableToken(tokenizer.nextToken(), "x");
@@ -240,7 +241,7 @@ public class TokenizerTest {
 
     @Test
     public void testTokenization14() {
-        final Tokenizer tokenizer = new Tokenizer("2*x-log(3)", null, null, new HashSet<>(Collections.singletonList("x")));
+        final Tokenizer tokenizer = new Tokenizer("2*x-log(3)", null, null, VariableStore.of("x"));
 
         assertTrue(tokenizer.hasNext());
         assertNumberToken(tokenizer.nextToken(), 2d);
@@ -271,7 +272,7 @@ public class TokenizerTest {
 
     @Test
     public void testTokenization15() {
-        final Tokenizer tokenizer = new Tokenizer("2*xlog+log(3)", null, null, new HashSet<>(Collections.singletonList("xlog")));
+        final Tokenizer tokenizer = new Tokenizer("2*xlog+log(3)", null, null, VariableStore.of("xlog"));
 
         assertTrue(tokenizer.hasNext());
         assertNumberToken(tokenizer.nextToken(), 2d);
@@ -302,7 +303,7 @@ public class TokenizerTest {
 
     @Test
     public void testTokenization16() {
-        final Tokenizer tokenizer = new Tokenizer("2*x+-log(3)", null, null, new HashSet<>(Collections.singletonList("x")));
+        final Tokenizer tokenizer = new Tokenizer("2*x+-log(3)", null, null, VariableStore.of("x"));
 
         assertTrue(tokenizer.hasNext());
         assertNumberToken(tokenizer.nextToken(), 2d);
@@ -336,7 +337,7 @@ public class TokenizerTest {
 
     @Test
     public void testTokenization17() {
-        final Tokenizer tokenizer = new Tokenizer("2 * x + -log(3)", null, null, new HashSet<>(Collections.singletonList("x")));
+        final Tokenizer tokenizer = new Tokenizer("2 * x + -log(3)", null, null, VariableStore.of("x"));
 
         assertTrue(tokenizer.hasNext());
         assertNumberToken(tokenizer.nextToken(), 2d);
@@ -459,7 +460,7 @@ public class TokenizerTest {
 
     @Test
     public void testTokenization21() {
-        final Tokenizer tokenizer = new Tokenizer("log(x) - y * (sqrt(x^cos(y)))", null, null, new HashSet<>(Arrays.asList("x", "y")));
+        final Tokenizer tokenizer = new Tokenizer("log(x) - y * (sqrt(x^cos(y)))", null, null, VariableStore.of("x", "y"));
 
         assertTrue(tokenizer.hasNext());
         assertFunctionToken(tokenizer.nextToken(), "log", 1);

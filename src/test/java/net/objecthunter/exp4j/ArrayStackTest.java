@@ -31,7 +31,7 @@ public class ArrayStackTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructor() {
-        ArrayStack stack = new ArrayStack(-1);
+        new ArrayStack(-1);
     }
 
     @Test

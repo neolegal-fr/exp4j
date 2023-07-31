@@ -28,11 +28,10 @@ import java.util.concurrent.Executors;
 
 import static org.junit.Assert.*;
 
-
 public class ExpressionTest {
     @Test
     public void testExpression1() {
-        Token[] tokens = new Token[]{
+        Token[] tokens = new Token[] {
                 new NumberToken(3d),
                 new NumberToken(2d),
                 new OperatorToken(Operators.getBuiltinOperator('+', 2))
@@ -43,7 +42,7 @@ public class ExpressionTest {
 
     @Test
     public void testExpression2() {
-        Token[] tokens = new Token[]{
+        Token[] tokens = new Token[] {
                 new NumberToken(1d),
                 new FunctionToken(Functions.getBuiltinFunction("log")),
         };
@@ -53,7 +52,7 @@ public class ExpressionTest {
 
     @Test
     public void testGetVariableNames1() {
-        Token[] tokens = new Token[]{
+        Token[] tokens = new Token[] {
                 new VariableToken("a"),
                 new VariableToken("b"),
                 new OperatorToken(Operators.getBuiltinOperator('+', 2))
@@ -235,7 +234,6 @@ public class ExpressionTest {
         values.put("y", 2.0);
         expression.setVariables(values);
 
-
         double result = expression.evaluate();
         assertEquals(3.0, result, 3.0 - result);
 
@@ -260,7 +258,6 @@ public class ExpressionTest {
 
     }
 
-
     @Test
     @Ignore
     // If Expression should be threads safe this test must pass
@@ -282,5 +279,34 @@ public class ExpressionTest {
             });
         }
     }
-}
 
+    @Test
+    public void testCustomVariableProvider() {
+        final Expression e = new ExpressionBuilder("2x")
+                .variables(new VariableProvider() {
+                    Double x = 2.0;
+
+                    @Override
+                    public Double get(String variable) {
+                        return variable.equals("x") ? x : null;
+                    }
+
+                    @Override
+                    public void set(String variable, Double value) {
+                        if (variable.equals("x")) {
+                            x = value;
+                        }
+                    }
+
+                    @Override
+                    public boolean contains(String name) {
+                        return name.equals("x");
+                    }
+
+                })
+                .build();
+        assertEquals(4.0, e.evaluate(), 0f);
+
+    }
+
+}

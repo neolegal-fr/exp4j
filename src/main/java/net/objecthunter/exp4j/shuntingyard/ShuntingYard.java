@@ -15,6 +15,7 @@
  */
 package net.objecthunter.exp4j.shuntingyard;
 
+import net.objecthunter.exp4j.VariableProvider;
 import net.objecthunter.exp4j.function.Function;
 import net.objecthunter.exp4j.operator.Operator;
 import net.objecthunter.exp4j.tokenizer.OperatorToken;
@@ -34,16 +35,16 @@ public class ShuntingYard {
      * @param expression             the expression to convert
      * @param userFunctions          the custom functions used
      * @param userOperators          the custom operators used
-     * @param variableNames          the variable names used in the expression
+     * @param variables          the variable names used in the expression
      * @param implicitMultiplication set to false to turn off implicit multiplication
      * @return a {@link net.objecthunter.exp4j.tokenizer.Token} array containing the result
      */
     public static Token[] convertToRPN(final String expression, final Map<String, Function> userFunctions,
-                                       final Map<String, Operator> userOperators, final Set<String> variableNames, final boolean implicitMultiplication) {
+                                       final Map<String, Operator> userOperators, final VariableProvider variables, final boolean implicitMultiplication) {
         final Stack<Token> stack = new Stack<>();
         final List<Token> output = new ArrayList<>();
 
-        final Tokenizer tokenizer = new Tokenizer(expression, userFunctions, userOperators, variableNames, implicitMultiplication);
+        final Tokenizer tokenizer = new Tokenizer(expression, userFunctions, userOperators, variables, implicitMultiplication);
         while (tokenizer.hasNext()) {
             Token token = tokenizer.nextToken();
             switch (token.getType()) {

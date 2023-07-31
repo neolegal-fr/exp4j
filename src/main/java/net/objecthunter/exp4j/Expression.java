@@ -28,18 +28,16 @@ public class Expression {
 
     private final Token[] tokens;
 
-    private final Map<String, Double> variables;
-
-    private VariableProvider variableProvider;
+    private VariableProvider variables;
 
     private final Set<String> userFunctionNames;
 
-    private static Map<String, Double> createDefaultVariables() {
-        final Map<String, Double> vars = new HashMap<>(4);
-        vars.put("pi", Math.PI);
-        vars.put("π", Math.PI);
-        vars.put("φ", 1.61803398874d);
-        vars.put("e", Math.E);
+    private static VariableStore createDefaultVariables() {
+        final VariableStore vars = new VariableStore();
+        vars.set("pi", Math.PI);
+        vars.set("π", Math.PI);
+        vars.set("φ", 1.61803398874d);
+        vars.set("e", Math.E);
         return vars;
     }
 
@@ -50,8 +48,7 @@ public class Expression {
      */
     public Expression(final Expression existing) {
         this.tokens = Arrays.copyOf(existing.tokens, existing.tokens.length);
-        this.variables = new HashMap<>();
-        this.variables.putAll(existing.variables);
+        this.variables = existing.variables;
         this.userFunctionNames = new HashSet<>(existing.userFunctionNames);
     }
 
@@ -69,12 +66,12 @@ public class Expression {
 
     public Expression setVariable(final String name, final double value) {
         this.checkVariableName(name);
-        this.variables.put(name, value);
+        this.variables.set(name, value);
         return this;
     }
 
-    public void setVariableProvider(final VariableProvider variableProvider) {
-        this.variableProvider = variableProvider;
+    public void setVariableProvider(final VariableProvider variables) {
+        this.variables = variables;
     }
 
     private void checkVariableName(String name) {
@@ -91,7 +88,7 @@ public class Expression {
     }
 
     public Expression clearVariables() {
-        this.variables.clear();
+        this.variables = new VariableStore();
         return this;
     }
 
@@ -111,7 +108,7 @@ public class Expression {
             for (final Token t : this.tokens) {
                 if (t.getType() == Token.TOKEN_VARIABLE) {
                     final String var = ((VariableToken) t).getName();
-                    if (!variables.containsKey(var)) {
+                    if (!variables.contains(var)) {
                         errors.add("The setVariable '" + var + "' has not been set");
                     }
                 }
@@ -179,8 +176,8 @@ public class Expression {
             } else if (t.getType() == Token.TOKEN_VARIABLE) {
                 final String name = ((VariableToken) t).getName();
                 Double value = this.variables.get(name);
-                if (value == null && variableProvider != null) {
-                    value = variableProvider.getVariable(name);
+                if (value == null && variables != null) {
+                    value = variables.get(name);
                 }
                 if (value == null) {
                     throw new IllegalArgumentException("No value has been set for the setVariable '" + name + "'.");

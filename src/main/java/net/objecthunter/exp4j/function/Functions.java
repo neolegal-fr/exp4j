@@ -341,4 +341,8 @@ public class Functions {
         }
     }
 
+    public static Function[] getBuiltinFunctions() {
+        return BUILT_IN_FUNCTIONS;
+    }
+
 }
