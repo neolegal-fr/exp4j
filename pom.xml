@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.neolegal</groupId>
     <artifactId>exp4j</artifactId>
-    <version>0.4.10</version>
+    <version>0.4.11-SNAPSHOT</version>
     <name>exp4j</name>
     <description>A fork from Frank Asseg simple mathematical expression evaluator for java.</description>
     <properties>
@@ -112,13 +112,13 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.1.1</version>
+            <version>1.2.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
