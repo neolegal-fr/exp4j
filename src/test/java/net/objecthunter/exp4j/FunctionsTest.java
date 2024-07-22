@@ -16,31 +16,33 @@
 package net.objecthunter.exp4j;
 
 import net.objecthunter.exp4j.function.Function;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FunctionsTest {
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testFunctionNameNull() {
-        Function f = new Function(null) {
-            @Override
-            public double apply(double... args) {
-                return 0;
-            }
-        };
+        assertThrows(IllegalArgumentException.class, () -> new Function(null) {
+                    @Override
+                    public double apply(double... args) {
+                        return 0;
+                    }
+                }
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testFunctionNameEmpty() {
-        Function f = new Function("") {
-            @Override
-            public double apply(double... args) {
-                return 0;
-            }
-        };
+        assertThrows(IllegalArgumentException.class, () -> new Function("") {
+                    @Override
+                    public double apply(double... args) {
+                        return 0;
+                    }
+                }
+        );
     }
 
     @Test
@@ -54,44 +56,48 @@ public class FunctionsTest {
         assertEquals(0f, f.apply(), 0f);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testFunctionNameNegativeArgs() {
-        Function f = new Function("foo", -1) {
-            @Override
-            public double apply(double... args) {
-                return 0;
-            }
-        };
+        assertThrows(IllegalArgumentException.class, () -> new Function("foo", -1) {
+                    @Override
+                    public double apply(double... args) {
+                        return 0;
+                    }
+                }
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testIllegalFunctionName1() {
-        Function f = new Function("1foo") {
-            @Override
-            public double apply(double... args) {
-                return 0;
-            }
-        };
+        assertThrows(IllegalArgumentException.class, () -> new Function("1foo") {
+                    @Override
+                    public double apply(double... args) {
+                        return 0;
+                    }
+                }
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testIllegalFunctionName2() {
-        Function f = new Function("_&oo") {
-            @Override
-            public double apply(double... args) {
-                return 0;
-            }
-        };
+        assertThrows(IllegalArgumentException.class, () -> new Function("_&oo") {
+                    @Override
+                    public double apply(double... args) {
+                        return 0;
+                    }
+                }
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testIllegalFunctionName3() {
-        Function f = new Function("o+o") {
-            @Override
-            public double apply(double... args) {
-                return 0;
-            }
-        };
+        assertThrows(IllegalArgumentException.class, () -> new Function("o+o") {
+                    @Override
+                    public double apply(double... args) {
+                        return 0;
+                    }
+                }
+        );
     }
 
     @Test

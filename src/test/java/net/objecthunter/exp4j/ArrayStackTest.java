@@ -15,11 +15,12 @@
  */
 package net.objecthunter.exp4j;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.EmptyStackException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 /**
  * @author Federico Vera (dktcoding [at] gmail)
@@ -29,9 +30,9 @@ public class ArrayStackTest {
     public ArrayStackTest() {
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructor() {
-        new ArrayStack(-1);
+        assertThrows(IllegalArgumentException.class, () -> new ArrayStack(-1));
     }
 
     @Test
@@ -82,10 +83,10 @@ public class ArrayStackTest {
         }
     }
 
-    @Test(expected = EmptyStackException.class)
+    @Test
     public void testPeekNoData() {
         ArrayStack stack = new ArrayStack(5);
-        stack.peek();
+        assertThrows(EmptyStackException.class, stack::peek);
     }
 
     @Test
@@ -101,7 +102,7 @@ public class ArrayStackTest {
         }
     }
 
-    @Test(expected = EmptyStackException.class)
+    @Test
     public void testPop2() {
         ArrayStack stack = new ArrayStack(5);
 
@@ -109,9 +110,10 @@ public class ArrayStackTest {
             stack.push(i);
         }
 
-        while (true) {
+        for (int i = 0; i < 5; i++) {
             stack.pop();
         }
+        assertThrows(EmptyStackException.class, stack::pop);
     }
 
     @Test
@@ -128,10 +130,10 @@ public class ArrayStackTest {
         assertTrue(stack.isEmpty());
     }
 
-    @Test(expected = EmptyStackException.class)
+    @Test
     public void testPopNoData() {
         ArrayStack stack = new ArrayStack(5);
-        stack.pop();
+        assertThrows(EmptyStackException.class, stack::pop);
     }
 
     @Test

@@ -19,14 +19,16 @@ import net.objecthunter.exp4j.function.Functions;
 import net.objecthunter.exp4j.operator.Operator;
 import net.objecthunter.exp4j.operator.Operators;
 import net.objecthunter.exp4j.tokenizer.*;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 public class ExpressionTest {
     @Test
@@ -164,15 +166,15 @@ public class ExpressionTest {
 
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void testInvalidCotangent1() {
         Expression e = new ExpressionBuilder("cot(0)")
                 .build();
-        e.evaluate();
+        assertThrows(ArithmeticException.class, e::evaluate);
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testOperatorFactorial2() {
         Operator factorial = new Operator("!", 1, true, Operator.PRECEDENCE_POWER + 1) {
 
@@ -192,12 +194,10 @@ public class ExpressionTest {
                 return result;
             }
         };
-
-        Expression e = new ExpressionBuilder("!3").build();
-        assertFalse(e.validate().isValid());
+        assertThrows(IllegalArgumentException.class, () -> new ExpressionBuilder("!3").build());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidFactorial2() {
         Operator factorial = new Operator("!", 1, true, Operator.PRECEDENCE_POWER + 1) {
 
@@ -218,8 +218,7 @@ public class ExpressionTest {
             }
         };
 
-        Expression e = new ExpressionBuilder("!!3").build();
-        assertFalse(e.validate().isValid());
+        assertThrows(IllegalArgumentException.class, () -> new ExpressionBuilder("!!3").build());
     }
 
     @Test
@@ -259,7 +258,7 @@ public class ExpressionTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     // If Expression should be threads safe this test must pass
     public void evaluateFamily() {
         final Expression e = new ExpressionBuilder("sin(x)")
